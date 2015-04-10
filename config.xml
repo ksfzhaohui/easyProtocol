@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="gbk"?>
 <!--
-language:鎸囧畾缂栫▼璇█,鐩墠鎻愪緵:java鍜宑sharp
-encode:鎸囧畾鐢熸垚绫绘枃浠剁殑缂栫爜
-beanRoot:bean鏂囦欢鐢熸垚鐨勬牴璺緞
-procRoot:protocol鏂囦欢鐢熸垚鐨勬牴璺緞
-rootPath:閰嶇疆鐨勫崗璁枃浠舵牴璺緞
-charset:瀛楃闆�
+language:指定编程语言,目前提供:java和csharp
+encode:指定生成类文件的编码
+beanRoot:bean文件生成的根路径
+procRoot:protocol文件生成的根路径
+rootPath:配置的协议文件根路径
+charset:字符集
 -->
 <progen name="EP">
 	<genout language="java" encode="UTF-8" beanRoot="./src/test/java"
