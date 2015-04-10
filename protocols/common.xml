@@ -1,0 +1,16 @@
+<protocols>
+	<Namespace name="com.ep.net.packet.bean">	
+		<!-- 公共部分-请求消息 -->
+		<Bean name="MBRequestBase">
+			<variable name="aid" 		type="long"/> 账号id	 
+			<variable name="pid" 		type="long"/> 玩家id
+			<variable name="sysTime" 		type="long"/> 系统时间
+		</Bean>
+		<!-- 公共部分-返回消息 -->
+		<Bean name="MBResponseBase">
+			<variable name="state" 		type="int"/>  响应状态
+			<variable name="msg" 		type="string"/> 响应消息
+			<variable name="token" 		type="long"/> 响应消息
+		</Bean>					
+	</Namespace>
+</protocols>

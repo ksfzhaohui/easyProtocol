@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<protocols>
+  <Import file="common.xml"/>
+
+  <Namespace name="com.ep.net.packet.bean">
+    <!-- 消息实体1100 -->
+    <Bean name="MBBattlePGeneral">
+      <variable name="state" 		type="int"/> 武将格子的状态（LOCK(1, "锁定中"), IDLE(2, "空闲中"),3, "已有上阵"))
+      <variable name="pgeneralId" 	type="int"/> 武将的原型id
+      <variable name="mainGeneralCheck" type="boolean"/> false 不是主武将 true 为主武将
+      <variable name="precondition" 	type="string"/> 条件列表逗号分隔（锁定中才有值）
+    </Bean>
+  </Namespace>
+
+  <Namespace name="com.ep.net.packet">
+    <!-- 请求-协议1100(测试) -->
+    <Protocol name="Protocol1100" type="1100" maxsize="65535">
+      <variable name="reqBase" 		type="com.ep.net.packet.bean.MBRequestBase"/>
+    </Protocol>
+    <!-- 响应-协议1100(测试) -->
+    <Protocol name="Protocol11100" type="11100" maxsize="65535">
+      <variable name="respBase"  type="com.ep.net.packet.bean.MBResponseBase"/>
+      <variable name="loginStage" 	type="int"/> 玩家登陆状态（1第一关未完成，2第一关已完成但未获得主城，3已获得主城的老玩家）
+      <variable name="sex" 	   type="byte"/> 性别
+      <variable name="param2" 	   type="boolean"/> 性别
+      <variable name="name" 	type="string"/> 名称
+      <variable name="ingot" 	type="float"/> 元宝
+      <variable name="glod" 	type="double"/> 金币
+      <variable name="exp"   	type="short"/> 经验
+      <variable name="pid" 	    type="long"/> 玩家id
+      <variable name="param1" 	type="map" key="string" value="int"/> 玩家参数
+      <variable name="battleGeneralSet" 	type="set" value="com.ep.net.packet.bean.MBBattlePGeneral"/> 出战武将列表
+      <variable name="battleGeneralVector" 	type="vector" value="com.ep.net.packet.bean.MBBattlePGeneral"/> 出战武将列表
+      <variable name="battleGenerals" 	type="list" value="com.ep.net.packet.bean.MBBattlePGeneral"/> 出战武将列表
+      <variable name="battleGeneralArray" 	type="array" value="com.ep.net.packet.bean.MBBattlePGeneral"/> 出战武将列表
+    </Protocol>
+  </Namespace>
+</protocols>
