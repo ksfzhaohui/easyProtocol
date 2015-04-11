@@ -17,7 +17,7 @@ import com.ep.net.packet.bean.MBResponseBase;
 
 public class Java2JavaTest {
 	public static void main(String[] args) throws Exception {
-		//		java2java();
+		// java2java();
 		csharp2java();
 	}
 
@@ -48,24 +48,22 @@ public class Java2JavaTest {
 		gArray[0] = new MBBattlePGeneral(4, 44, false, "xxx4");
 		p1.battleGeneralArray = gArray;
 
-		//转换成字节
+		// 转换成字节
 		byte info[] = p1.toByte();
 
-		//将字节写入文件,方便c#调用
-		FileOutputStream io = new FileOutputStream(new File(
-				"D:/C#workspace/easyProtocol/easyProtocol/javabuffer"));
+		// 将字节写入文件,方便c#调用
+		FileOutputStream io = new FileOutputStream(new File("javabuffer"));
 		io.write(info);
 		io.close();
 
-		//转换成对象
+		// 转换成对象
 		Protocol11100 p2 = new Protocol11100();
 		p2.parseFrom(info);
 		System.out.println(p2.toString());
 	}
 
 	public static void csharp2java() throws Exception {
-		FileInputStream io = new FileInputStream(new File(
-				"D:/C#workspace/easyProtocol/easyProtocol/csharpbuffer"));
+		FileInputStream io = new FileInputStream(new File("csharpbuffer"));
 		byte[] inOutb = new byte[io.available()];
 		io.read(inOutb);
 		Protocol11100 p2 = new Protocol11100();
