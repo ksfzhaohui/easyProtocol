@@ -12,24 +12,35 @@ import com.ep.Factory;
 
 /**
  * 配置文件
+ * 
  * @author zhaohui
- *
+ * 
  */
 public class ConfigInfo {
-	private String language;//语言
-	private String endfix;//后缀
-	private String procRoot;//协议生成路径
-	private String beanRoot;//bean生成路径
-	private String encode;//编码
-	private String charSet;//字符集
+	private String language;// 语言
+	private String endfix;// 后缀
+	private String procRoot;// 协议生成路径
+	private String beanRoot;// bean生成路径
+	private String encode;// 编码
+	private String charSet;// 字符集
 
-	private List<File> fileList = new ArrayList<File>();//模块协议文件列表
+	private List<File> fileList = new ArrayList<File>();// 模块协议文件列表
 
-	public void init(String progenXml, String configXml) {
+	private String configXml;
+	private String progenXml;
+
+	public ConfigInfo(String configXml, String progenXml) {
+		this.configXml = configXml;
+		this.progenXml = progenXml;
+	}
+
+	public void init() {
 		try {
 			Element outputRoot = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().parse(configXml).getDocumentElement();
 			// 相关参数
+			System.out.println(outputRoot.getElementsByTagName("genout")
+					.getLength());
 			Element output = (Element) outputRoot
 					.getElementsByTagName("genout").item(0);
 			setBeanRoot(output.getAttribute("beanRoot"));

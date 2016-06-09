@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gbk"?>
+<!--
+language:指定编程语言,目前提供:java和csharp
+encode:指定生成类文件的编码
+beanRoot:bean文件生成的根路径
+procRoot:protocol文件生成的根路径
+rootPath:配置的协议文件根路径
+charset:字符集
+-->
+<progen name="EP">
+	<genout language="java" encode="UTF-8" beanRoot="./src/test/java"
+		procRoot="./src/test/java" rootPath="./protocols" charset="UTF-8" />
+	<!--
+	<genout language="csharp" encode="UTF-8" beanRoot="D:/C#workspace/easyProtocol/easyProtocol"
+		procRoot="D:/C#workspace/easyProtocol/easyProtocol" rootPath="./protocols" charset="UTF-8" />
+	-->
+</progen>
