@@ -14,8 +14,6 @@ public class ProtoGen {
 	 *            配置信息
 	 */
 	public static void genFile(ConfigInfo config) {
-		config.checkConfig();
-
 		for (File file : config.getFileList()) {
 			// 协议文件结构
 			Struct struct = Factory.getStruct(config.getLanguage());

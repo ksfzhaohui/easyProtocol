@@ -8,15 +8,17 @@ import com.ep.genpro.variable.CSharpVariable;
 
 public class CSharpStruct extends Struct {
 
+	@Override
 	protected String getFormatType(String namespace, String xmlType) {
 		String languageType = CSharpTypeFactory.obj().getLanguageType(xmlType);
 		if (null != languageType) {
 			return languageType;
 		} else {
-			return changeNamespace(namespace, xmlType);
+			return beanTypeFormat(namespace, xmlType);
 		}
 	}
 
+	@Override
 	protected boolean isValidBeanValue(String value) {
 		return CSharpTypeFactory.obj().isOrignType(value)
 				|| beans.containsKey(value);

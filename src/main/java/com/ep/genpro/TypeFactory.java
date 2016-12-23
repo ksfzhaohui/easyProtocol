@@ -10,10 +10,12 @@ public abstract class TypeFactory {
 	 * 从xml定义类型到编程语言基本类型的映射
 	 */
 	protected Map<String, String> declare2Type = new TreeMap<String, String>();
+
 	/**
 	 * 基本类型从编程语言基本类型到Type的映射
 	 */
 	protected Map<String, Type> innerTypes = new TreeMap<String, Type>();
+
 	/**
 	 * 容器类型从编程语言基本类型到Type的映射
 	 */

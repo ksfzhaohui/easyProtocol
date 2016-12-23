@@ -17,14 +17,20 @@ import com.ep.Factory;
  * 
  */
 public class ConfigInfo {
-	private String language;// 语言
-	private String endfix;// 后缀
-	private String procRoot;// 协议生成路径
-	private String beanRoot;// bean生成路径
-	private String encode;// 编码
-	private String charSet;// 字符集
-
-	private List<File> fileList = new ArrayList<File>();// 模块协议文件列表
+	/** 语言 **/
+	private String language;
+	/** 后缀 **/
+	private String endfix;
+	/** 协议生成路径 **/
+	private String procRoot;
+	/** bean生成路径 **/
+	private String beanRoot;
+	/** 编码 **/
+	private String encode;
+	/** 字符集 **/
+	private String charSet;
+	/** 协议文件列表 **/
+	private List<File> fileList = new ArrayList<File>();
 
 	private String configXml;
 	private String progenXml;
@@ -38,9 +44,6 @@ public class ConfigInfo {
 		try {
 			Element outputRoot = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().parse(configXml).getDocumentElement();
-			// 相关参数
-			System.out.println(outputRoot.getElementsByTagName("genout")
-					.getLength());
 			Element output = (Element) outputRoot
 					.getElementsByTagName("genout").item(0);
 			setBeanRoot(output.getAttribute("beanRoot"));
@@ -56,7 +59,6 @@ public class ConfigInfo {
 
 			Element root = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().parse(progenXml).getDocumentElement();
-			// 协议文件
 			NodeList inputList = root.getElementsByTagName("file");
 			int manSize = inputList.getLength();
 			for (int m = 0; m < manSize; ++m) {

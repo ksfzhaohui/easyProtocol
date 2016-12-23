@@ -3,6 +3,7 @@ package com.ep;
 import com.ep.config.ConfigInfo;
 
 /**
+ * 启动类
  * 
  * @author zhaohui
  * 
@@ -12,12 +13,13 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		if (args == null || args.length == 0) {
 			args = new String[2];
-			args[0] = "D:\\easyProtocol-1.0.1-beta\\config.xml";
-			args[1] = "D:\\easyProtocol-1.0.1-beta\\progen.xml";
+			args[0] = "E:\\github\\easyProtocol\\config\\config.xml";
+			args[1] = "E:\\github\\easyProtocol\\config\\progen.xml";
 		}
 
 		ConfigInfo config = getConfig(args);
 		config.init();
+		config.checkConfig();
 
 		ProtoGen.genFile(config);
 	}

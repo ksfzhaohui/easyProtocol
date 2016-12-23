@@ -8,30 +8,28 @@ import com.ep.genpro.variable.JavaVariable;
 
 public class JavaStruct extends Struct {
 
+	@Override
 	protected String getFormatType(String namespace, String xmlType) {
 		String languageType = JavaTypeFactory.obj().getLanguageType(xmlType);
 		if (null != languageType) {
 			return languageType;
 		} else {
-			return changeNamespace(namespace, xmlType);
+			return beanTypeFormat(namespace, xmlType);
 		}
 	}
 
-	/**
-	 * 参数为编程语言类型
-	 * 
-	 * @param value
-	 * @return
-	 */
+	@Override
 	protected boolean isValidBeanValue(String value) {
 		return JavaTypeFactory.obj().isOrignType(value)
 				|| beans.containsKey(value);
 	}
 
+	@Override
 	protected Type getInnerType(String vType) {
 		return JavaTypeFactory.obj().getInnerType(vType);
 	}
 
+	@Override
 	protected boolean isInnerType(String vType) {
 		return JavaTypeFactory.obj().isInnerType(vType);
 	}

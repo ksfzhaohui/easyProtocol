@@ -20,10 +20,18 @@ import com.ep.config.Protocol;
 
 /**
  * 协议文件结构
+ * 
  * @author zhaohui
- *
+ * 
  */
 public abstract class Struct {
+
+	protected String Import = "Import";
+	protected String Namespace = "Namespace";
+	protected String Bean = "Bean";
+	protected String Protocol = "Protocol";
+	protected String Variable = "variable";
+	protected String Default = "default";
 
 	protected final Set<String> importfile = new HashSet<String>();
 	protected final Set<String> namespaces = new HashSet<String>();
@@ -36,7 +44,8 @@ public abstract class Struct {
 	protected final Map<String, Protocol> protocolStructs = new TreeMap<String, Protocol>();
 
 	/**
-	 * 解析协议文档
+	 * 解析协议文档并检查
+	 * 
 	 * @param xml
 	 */
 	public void parseFileStruct(String xml) {
@@ -45,57 +54,76 @@ public abstract class Struct {
 					.newDocumentBuilder().parse(xml);
 			Element root = doc.getDocumentElement();
 			NodeList nodes = root.getChildNodes();
-			for (int i = 0; i != nodes.getLength(); ++i) {
-				Node n = nodes.item(i);
-				if (n.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) n;
-					if ("Import".equals(element.getNodeName())) {
-						String filename = getFullName(xml,
-								element.getAttribute("file"));
-						if (importfile.contains(filename)) {
-							continue;
-						}
-						parseFileStruct(filename);
-						importfile.add(filename);
-					}
-					if ("Namespace".equals(element.getNodeName())) {
-						String namespace = element.getAttribute("name");
-						if (namespace.equals("")) {
-							throw new RuntimeException(
-									"protocol name valid: no name");
-						}
-						namespaces.add(namespace);
-						analyzeBeans(namespace, element);
-						analyzeProtocols(namespace, element);
-					}
-				}
-			}
 
-			for (int i = 0; i != nodes.getLength(); ++i) {
-				Node n = nodes.item(i);
-				if (n.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) n;
-					if (element.getNodeName().equals("Namespace")) {
-						String namespace = element.getAttribute("name");
-						for (Entry<String, Element> e : beans.entrySet()) {
-							if (inThisNameSpace(namespace, e.getKey()))
-								verifyBean(namespace, e.getKey(), e.getValue());
-						}
-						for (Entry<String, Element> e : protocols.entrySet()) {
-							if (inThisNameSpace(namespace, e.getKey()))
-								verifyProtocol(namespace, e.getKey(),
-										e.getValue());
-						}
-					}
-				}
-			}
+			analyzeBeanProtocol(xml, nodes);
+			verifyBeanProtocol(nodes);
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
 
 	/**
+	 * 解析bean和protocol
+	 * 
+	 * @param xml
+	 * @param nodes
+	 */
+	private void analyzeBeanProtocol(String xml, NodeList nodes) {
+		for (int i = 0; i != nodes.getLength(); ++i) {
+			Node n = nodes.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) n;
+				if (Import.equals(element.getNodeName())) {
+					String filename = getFullName(xml,
+							element.getAttribute("file"));
+					if (importfile.contains(filename)) {
+						continue;
+					}
+					parseFileStruct(filename);
+					importfile.add(filename);
+				}
+				if (Namespace.equals(element.getNodeName())) {
+					String namespace = element.getAttribute("name");
+					if (namespace.equals("")) {
+						throw new RuntimeException("xmlFile:" + xml
+								+ " Namespace valid: no name");
+					}
+					namespaces.add(namespace);
+					analyzeBeans(namespace, element);
+					analyzeProtocols(namespace, element);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 对bean和protocol进行有效性检查
+	 * 
+	 * @param nodes
+	 */
+	private void verifyBeanProtocol(NodeList nodes) {
+		for (int i = 0; i != nodes.getLength(); ++i) {
+			Node n = nodes.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) n;
+				if (element.getNodeName().equals(Namespace)) {
+					String namespace = element.getAttribute("name");
+					for (Entry<String, Element> e : beans.entrySet()) {
+						if (inThisNameSpace(namespace, e.getKey()))
+							verifyBean(namespace, e.getKey(), e.getValue());
+					}
+					for (Entry<String, Element> e : protocols.entrySet()) {
+						if (inThisNameSpace(namespace, e.getKey()))
+							verifyProtocol(namespace, e.getKey(), e.getValue());
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * 解析bean
+	 * 
 	 * @param namespace
 	 * @param element
 	 */
@@ -105,17 +133,17 @@ public abstract class Struct {
 			Node n = allNodes.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				Element e = (Element) n;
-				if (e.getNodeName().equals("Bean")) {
+				if (e.getNodeName().equals(Bean)) {
 					String beanName = Helper.changeFirstCharName(
 							e.getAttribute("name"), true);
 					if (null != namespace && !namespace.equals(""))
 						beanName = namespace + "." + beanName;
 					if (beanName.contains("_"))
-						throw new RuntimeException(
-								"bean can not use name that contains _");
+						throw new RuntimeException("beanName:" + beanName
+								+ " contains _");
 					if (beans.containsKey(beanName))
-						throw new RuntimeException("duplicate bean name:"
-								+ beanName);
+						throw new RuntimeException("beanName:" + beanName
+								+ "duplicate bean name");
 					beans.put(beanName, e);
 				}
 			}
@@ -124,6 +152,7 @@ public abstract class Struct {
 
 	/**
 	 * 解析protocol
+	 * 
 	 * @param namespace
 	 * @param element
 	 */
@@ -133,19 +162,18 @@ public abstract class Struct {
 			Node n = allNodes.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				Element e = (Element) n;
-				if (e.getNodeName().equals("Protocol")) {
+				if (e.getNodeName().equals(Protocol)) {
 					String protocolName = Helper.changeFirstCharName(
 							e.getAttribute("name"), true);
 					if (null != namespace && !namespace.equals(""))
 						protocolName = namespace + "." + protocolName;
 					if (beans.containsKey(protocolName)) {
-						throw new RuntimeException(
-								"protocol can not use duplicate name with bean, name:"
-										+ protocolName);
+						throw new RuntimeException("protocolName:"
+								+ protocolName + " duplicate name with bean");
 					}
 					if (protocols.containsKey(protocolName)) {
-						throw new RuntimeException("duplicate protocol name:"
-								+ protocolName);
+						throw new RuntimeException("protocolName:"
+								+ protocolName + " duplicate protocol name");
 					}
 					protocols.put(protocolName, e);
 				}
@@ -153,8 +181,14 @@ public abstract class Struct {
 		}
 	}
 
-	private final void verifyBean(String namespace, String beanName,
-			Element bean) {
+	/**
+	 * 检查Bean是否合法
+	 * 
+	 * @param namespace
+	 * @param beanName
+	 * @param bean
+	 */
+	private void verifyBean(String namespace, String beanName, Element bean) {
 		NodeList childNodes = bean.getChildNodes();
 		if (childNodes.getLength() == 0)
 			throw new RuntimeException("bean:" + bean.getNodeName()
@@ -167,7 +201,7 @@ public abstract class Struct {
 			if (v.getNodeType() != Node.ELEMENT_NODE)
 				continue;
 			Element node = (Element) v;
-			if (node.getNodeName() == "variable") {
+			if (node.getNodeName() == Variable) {
 				String vName = node.getAttribute("name");
 				if (variableNames.contains(vName))
 					throw new RuntimeException("bean:" + beanName
@@ -183,6 +217,13 @@ public abstract class Struct {
 		}
 	}
 
+	/**
+	 * 检查Protocol是否合法
+	 * 
+	 * @param namespace
+	 * @param protocolName
+	 * @param protocol
+	 */
 	private void verifyProtocol(String namespace, String protocolName,
 			Element protocol) {
 		NodeList childNodes = protocol.getChildNodes();
@@ -230,6 +271,16 @@ public abstract class Struct {
 		}
 	}
 
+	/**
+	 * 检查Variable是否合法
+	 * 
+	 * @param namespace
+	 * @param nodeType
+	 * @param nodeName
+	 * @param vName
+	 * @param variable
+	 * @return
+	 */
 	private Variable verifyVariable(String namespace, String nodeType,
 			String nodeName, String vName, Element variable) {
 		String vType = getFormatType(namespace, variable.getAttribute("type"));
@@ -242,10 +293,10 @@ public abstract class Struct {
 					+ vName + " type:" + vType + " has not defined");
 		}
 		String vDefault = null;
-		if (variable.hasAttribute("default")) {
+		if (variable.hasAttribute(Default)) {
 			if (isInnerType(vType)) {
 				Type t = getInnerType(vType);
-				vDefault = variable.getAttribute("default");
+				vDefault = variable.getAttribute(Default);
 				if (!t.isInitialValid(vDefault))
 					throw new RuntimeException(nodeType + ":" + nodeName
 							+ " variable:" + vName + " type:" + vType
@@ -277,13 +328,21 @@ public abstract class Struct {
 						+ " has not defined or was container");
 		}
 		return variable(vName, vType, vDefault, vKey, vValue,
-				getComment(variable));
+				getVariableComment(variable));
 	}
 
+	/**
+	 * 获取xmlType对应的语言类型
+	 * 
+	 * @param namespace
+	 * @param xmlType
+	 * @return
+	 */
 	protected abstract String getFormatType(String namespace, String xmlType);
 
 	/**
 	 * 检查是否是有效的类型(包括原始类型和bean)
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -291,6 +350,7 @@ public abstract class Struct {
 
 	/**
 	 * 获取基础类型
+	 * 
 	 * @param vType
 	 * @return
 	 */
@@ -298,6 +358,7 @@ public abstract class Struct {
 
 	/**
 	 * 是否是基础类型
+	 * 
 	 * @param vType
 	 * @return
 	 */
@@ -305,6 +366,7 @@ public abstract class Struct {
 
 	/**
 	 * 实例化bean和protocol的Variable
+	 * 
 	 * @param vName
 	 * @param vType
 	 * @param vDefault
@@ -318,6 +380,7 @@ public abstract class Struct {
 
 	/**
 	 * 检查bean和protocol是否在命名空间内
+	 * 
 	 * @param namespace
 	 * @param name
 	 * @return
@@ -354,12 +417,12 @@ public abstract class Struct {
 
 	/**
 	 * 获取bean的注释
+	 * 
 	 * @param self
 	 * @return
 	 */
 	private String getBeanComment(Element self) {
 		String comment = "";
-		// previous sibling comment
 		for (Node c = self.getPreviousSibling(); null != c; c = c
 				.getPreviousSibling()) {
 			if (Node.ELEMENT_NODE == c.getNodeType()) {
@@ -375,10 +438,11 @@ public abstract class Struct {
 
 	/**
 	 * 获取Variable的注释
+	 * 
 	 * @param n
 	 * @return
 	 */
-	protected String getComment(Node n) {
+	protected String getVariableComment(Node n) {
 		String comment = "";
 		Node c = n.getNextSibling();
 		if (c != null && Node.TEXT_NODE == c.getNodeType())
@@ -388,7 +452,14 @@ public abstract class Struct {
 		return comment.trim();
 	}
 
-	protected final String changeNamespace(String namespace, String name) {
+	/**
+	 * Variable类型为bean类型添加namespace
+	 * 
+	 * @param namespace
+	 * @param name
+	 * @return
+	 */
+	protected final String beanTypeFormat(String namespace, String name) {
 		if (!name.contains(".") && null != namespace && !namespace.equals("")) {
 			return namespace + "." + name;
 		} else {
