@@ -2,22 +2,27 @@ package com.ep.genpro;
 
 public abstract class Variable {
 
-	protected String type;
-	protected String initial;
-	protected String key;
-	protected String value;
-	protected String comment;
-
+	/** 名称 **/
 	protected String name;
+	/** 类型 **/
+	protected String type;
+	/** 默认值 **/
+	protected String initial;
+	/** map的key类型 **/
+	protected String key;
+	/** map的value类型 **/
+	protected String value;
+	/** 注释 **/
+	protected String comment;
 
 	public Variable(String name, String type, String initial, String key,
 			String value, String comment) {
+		this.name = name;
 		this.type = type;
 		this.initial = initial;
 		this.key = key;
 		this.value = value;
 		this.comment = comment;
-		this.name = name;
 	}
 
 	public String getType() {
